@@ -3,7 +3,7 @@
 
 
 
-let game = new Game(500);
+let game = new Game(1000);
 game.run();
 
 function Game (speed) {
@@ -58,25 +58,33 @@ function Game (speed) {
 
   this.newRules = function (board) {
     let nextBoard = new Board(this.canvas.xMax, this.canvas.yMax);
+
+    //THIS IS REALLY BAD & SLOW
+    nextBoard.deepCopy(board);
+
     let boardXmax = Math.min(board.xMax, nextBoard.xMax);
     let boardYmax = Math.min(board.yMax, nextBoard.yMax);
+    //console.log("TURN-------------")
 
     for (let x = 0; x < boardXmax; x++) {
       for (let y = 0; y < boardYmax; y++) {
         let oldcell = board.getCell(x, y);
         if (oldcell.isAlive === 0) { continue; } //skip dead cells
+        //let cell = oldcell.deepCopy();
+        let cell = nextBoard.getCell(x, y);
 
-        let cell = oldcell.deepCopy();
+        //console.log(`START TURN FOR [${x},${y}] ${cell}`);
+        cell.age = cell.age + 1;
 
         //adjust cell body
-        if (cell.energy <= this.ENERGY_MIN) {
+        if (oldcell.energy <= this.ENERGY_MIN) {
           cell.kill();
           this.canvas.drawCell(x, y, cell);
           continue;
         }
 
         //add energy from sun
-        cell.addEnergy((1 - (cell.klass / this.KLASS_MAX)) * 20);
+        cell.addEnergy((1 - (oldcell.klass / this.KLASS_MAX)) * 20);
 
         //take away energy from living
         cell.takeEnergy(10);
@@ -100,28 +108,33 @@ function Game (speed) {
         //implement brain out
         pos = [[x, y + 1], [x + 1, y], [x, y - 1], [x - 1, y]];
         for (let i = 0; i < brainOut.length; i++) {
-          let rcellNew = nextBoard.getCell(pos[i][0], pos[i][1]);
           let rcellOld = board.getCell(pos[i][0], pos[i][1]);
 
+          // if(nextBoard.getCell(pos[i][0], pos[i][1]).age >= rcellOld.age){
+          //   nextBoard.setCell(pos[i][0], pos[i][1], rcellOld.deepCopy());
+          // }
+
           if (brainOut[i] < 0) { //take energy
-            rcellNew.takeEnergy(Math.abs(brainOut[i]));
+            nextBoard.getCell(pos[i][0], pos[i][1]).takeEnergy(Math.abs(brainOut[i]));
             cell.addEnergy(Math.abs(brainOut[i]));
 
           } else if (brainOut[i] > 0) { //place energy
-            if (rcellOld.klass <= cell.klass) { //check if can reproduce
+            if (rcellOld.isAlive === 0 || rcellOld.klass < oldcell.klass) { //check if can reproduce
+              //console.log(`[${x},${y}] is reproducing. Giving ${brainOut[i]} energy to (${pos[i][0]},${pos[i][1]})`);
               nextBoard.setCell(pos[i][0], pos[i][1], new Cell(1, brainOut[i], addRandomInt(cell.klass, 5), null));
               cell.takeEnergy(brainOut[i]);
             } else { //if not reproduce, simply give energy
-              rcellNew.addEnergy(brainOut[i]);
+              //console.log(`[${x},${y}] is giving energy. Giving ${brainOut[i]} energy to (${pos[i][0]},${pos[i][1]})`);
+              nextBoard.getCell(pos[i][0], pos[i][1]).addEnergy(brainOut[i]);
               cell.takeEnergy(brainOut[i]);
             }
           }
 
-          this.canvas.drawCell(x, y, rcellNew);
+          //console.log(`next board: [${pos[i][0]},${pos[i][1]}] ${nextBoard.getCell(pos[i][0], pos[i][1])}`);
         }
 
-        //console.log(`[${x}, ${y}]: ${cell}`);
-        nextBoard.setCell(x, y, cell);
+        //console.log(`END TURN FOR [${x},${y}] ${cell}`);
+        //nextBoard.setCell(x, y, cell);
         this.canvas.drawCell(x, y, cell);
       }
     }
@@ -157,12 +170,11 @@ function Game (speed) {
 
 function Cell(isAlive, energy, klass, mybrain){
   this.isAlive = isAlive;
+  this.age = isAlive;
 
-  if(energy <= game.ENERGY_MAX) {
-    this.energy = energy;
-  } else {
-    this.energy = game.ENERGY_MAX;
-  }
+  if(energy > game.ENERGY_MAX) { this.energy = game.ENERGY_MAX; }
+  else if (energy < game.ENERGY_MIN) { this.energy = game.ENERGY_MIN; }
+  else { this.energy = energy;  }
 
   if(klass > game.KLASS_MAX) { this.klass = game.KLASS_MAX; }
   else if (klass < game.KLASS_MIN) { this.klass = game.KLASS_MIN; }
@@ -182,31 +194,40 @@ function Cell(isAlive, energy, klass, mybrain){
   };
 
   this.runBrain = function(input) {
+    //return [0,0,0,0];
     if (input[0] > 100) {
       return [20, 20, 20, 20];
     } else {
+      //return [-10,-10,-10,-10];
       return [0,0,0,0];
     }
   };
 
   this.takeEnergy = function(amount) {
-    if(this.energy - amount >= 0){
+    if(this.energy - amount >= game.ENERGY_MIN){
       this.energy = this.energy - amount;
     } else {
-      this.energy = 0;
+      this.energy = game.ENERGY_MIN;
     }
   };
 
   this.addEnergy = function(amount) {
-    this.energy = this.energy + amount;
+    //console.log(`Adding ${amount} energy to ${this.energy}`);
+    if(this.energy + amount <= game.ENERGY_MAX){
+      this.energy = this.energy + amount;
+    } else {
+      this.energy = game.ENERGY_MAX;
+    }
   };
 
   this.deepCopy = function(){
-    return new Cell(this.isAlive, this.energy, this.klass, this.mybrain); //TODO make deep copy of brain
+    let cell = new Cell(this.isAlive, this.energy, this.klass, this.mybrain); //TODO make deep copy of brain
+    cell.age = this.age;
+    return cell;
   };
 
   this.toString = function(){
-    return `Cell: alive ${this.isAlive}, energy ${this.energy}, klass ${this.klass}, brain ${this.mybrain}`;
+    return `Cell: age: ${this.age}, alive ${this.isAlive}, energy ${this.energy}, klass ${this.klass}, brain ${this.mybrain}`;
   }
 
 }
@@ -219,6 +240,14 @@ function Board (xMax, yMax) {
         cols[j] = new Cell(0,0,0,null);
       }
       this.board[i] = cols;
+    }
+  };
+
+  this.deepCopy = function(board){
+    for (let x = 0; x < this.xMax; x++) {
+      for (let y = 0; y < this.yMax; y++) {
+        this.setCell(x,y, board.getCell(x,y).deepCopy());
+      }
     }
   };
 
@@ -343,7 +372,7 @@ function Canvas (yMax) {
     }
   };
 
-  this.drawInfo = async function(xCell, yCell, cell) {
+  this.drawInfo = function(xCell, yCell, cell) {
     self.infoPanelxCell = xCell;
     self.infoPanelyCell = yCell;
     self.infoPanel = document.querySelector("#infoPanel");
