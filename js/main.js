@@ -3,7 +3,7 @@
 
 
 
-let game = new Game(100);
+let game = new Game(500);
 game.run();
 
 function Game (speed) {
@@ -22,10 +22,9 @@ function Game (speed) {
   this.ENERGY_MIN = 0;
   this.KLASS_MAX = 100;
   this.KLASS_MIN = 0;
-
-
   this.speed = speed;
   this.running = true;
+  this.xCellNum = 20;
 
 
   this.gameOfLifeRules = function (board) {
@@ -67,8 +66,6 @@ function Game (speed) {
         let oldcell = board.getCell(x, y);
         if (oldcell.isAlive === 0) { continue; } //skip dead cells
 
-        console.log(oldcell);
-
         let cell = oldcell.deepCopy();
 
         //adjust cell body
@@ -79,15 +76,16 @@ function Game (speed) {
         }
 
         //add energy from sun
-        cell.addEnergy((1 - (cell.klass / this.KLASS_MAX)) * 10);
+        cell.addEnergy((1 - (cell.klass / this.KLASS_MAX)) * 20);
 
         //take away energy from living
-        cell.takeEnergy(20);
+        cell.takeEnergy(10);
 
         //brain in
         let pos = {above: [x, y + 1], right: [x + 1, y], bottom: [x, y - 1], left: [x - 1, y]};
         let brainInput =
-          [board.getCell(pos.above[0], pos.above[1]).energy, board.getCell(pos.above[0], pos.above[1]).klass, //above
+          [oldcell.energy, oldcell.klass, //myself
+          board.getCell(pos.above[0], pos.above[1]).energy, board.getCell(pos.above[0], pos.above[1]).klass, //above
           board.getCell(pos.right[0], pos.right[1]).energy, board.getCell(pos.right[0], pos.right[1]).klass, //right
           board.getCell(pos.bottom[0], pos.bottom[1]).energy, board.getCell(pos.bottom[0], pos.bottom[1]).klass, //bottom
           board.getCell(pos.left[0], pos.left[1]).energy, board.getCell(pos.left[0], pos.left[1]).klass,]; //left
@@ -102,7 +100,7 @@ function Game (speed) {
         //implement brain out
         pos = [[x, y + 1], [x + 1, y], [x, y - 1], [x - 1, y]];
         for (let i = 0; i < brainOut.length; i++) {
-          let rcellNew = nextBoard.getCell(pos[i][0], pos[i][1])
+          let rcellNew = nextBoard.getCell(pos[i][0], pos[i][1]);
           let rcellOld = board.getCell(pos[i][0], pos[i][1]);
 
           if (brainOut[i] < 0) { //take energy
@@ -111,7 +109,7 @@ function Game (speed) {
 
           } else if (brainOut[i] > 0) { //place energy
             if (rcellOld.klass <= cell.klass) { //check if can reproduce
-              nextBoard.setCell(pos[i][0], pos[i][1], new Cell(1, brainOut[i], addRandomInt(cell.klass, 5)));
+              nextBoard.setCell(pos[i][0], pos[i][1], new Cell(1, brainOut[i], addRandomInt(cell.klass, 5), null));
               cell.takeEnergy(brainOut[i]);
             } else { //if not reproduce, simply give energy
               rcellNew.addEnergy(brainOut[i]);
@@ -121,6 +119,8 @@ function Game (speed) {
 
           this.canvas.drawCell(x, y, rcellNew);
         }
+
+        //console.log(`[${x}, ${y}]: ${cell}`);
         nextBoard.setCell(x, y, cell);
         this.canvas.drawCell(x, y, cell);
       }
@@ -130,7 +130,7 @@ function Game (speed) {
 
   this.run = async function(){
     //init
-    this.canvas = new Canvas(100);
+    this.canvas = new Canvas(this.xCellNum);
     this.currBoard = new Board(this.canvas.xMax, this.canvas.yMax);
     //this.currBoard.randPopulate();
     this.canvas.drawBoard(this.currBoard);
@@ -164,11 +164,9 @@ function Cell(isAlive, energy, klass, mybrain){
     this.energy = game.ENERGY_MAX;
   }
 
-  if(klass <= game.KLASS_MAX) {
-    this.klass = klass;
-  } else {
-    this.klass = game.KLASS_MAX;
-  }
+  if(klass > game.KLASS_MAX) { this.klass = game.KLASS_MAX; }
+  else if (klass < game.KLASS_MIN) { this.klass = game.KLASS_MIN; }
+  else { this.klass = klass;  }
 
   this.mybrain = mybrain;
 
@@ -183,9 +181,12 @@ function Cell(isAlive, energy, klass, mybrain){
     this.isAlive = 0;
   };
 
-  this.runBrain = function(input){
-    //TODO
-    return [0, 0 ,0 ,0];
+  this.runBrain = function(input) {
+    if (input[0] > 100) {
+      return [20, 20, 20, 20];
+    } else {
+      return [0,0,0,0];
+    }
   };
 
   this.takeEnergy = function(amount) {
@@ -198,11 +199,11 @@ function Cell(isAlive, energy, klass, mybrain){
 
   this.addEnergy = function(amount) {
     this.energy = this.energy + amount;
-  }
+  };
 
   this.deepCopy = function(){
     return new Cell(this.isAlive, this.energy, this.klass, this.mybrain); //TODO make deep copy of brain
-  }
+  };
 
   this.toString = function(){
     return `Cell: alive ${this.isAlive}, energy ${this.energy}, klass ${this.klass}, brain ${this.mybrain}`;
@@ -237,6 +238,8 @@ function Board (xMax, yMax) {
   };
 
   this.setCell = function (x, y, cell) {
+    if(x > this.xMax - 1 || x < 0) return;
+    if(y > this.yMax - 1 || y < 0) return;
     this.board[x][y] = cell;
   };
 
@@ -277,8 +280,11 @@ function Canvas (yMax) {
     this.BUTTON_HEIGHT = this.clientHeight * 0.05;
     this.BUTTON_WIDTH = (this.clientWidth - 100) / this.NUM_BUTTONS;
     this.CELL_COLOR = "#ffffff";
-    this.BACK_COLOR = "#ffffff";
+    this.BACK_COLOR = "#000000";
     this.BORDER_WIDTH = 1;
+
+    this.isPopulating = true;
+    this.isShowingInfoPanel = false;
 
     this.canvas = document.getElementById("myCanvas");
     this.playButton = document.getElementById("playButton");
@@ -318,6 +324,11 @@ function Canvas (yMax) {
                         this.cellWidth - (2* self.BORDER_WIDTH), this.cellHeight - (2* self.BORDER_WIDTH));
     }
 
+    //draw info panel
+    if(self.isShowingInfoPanel && this.infoPanelxCell === x &&  this.infoPanelyCell === y) {
+      self.updateInfo();
+    }
+
   };
 
   this.drawBoard = function(board){
@@ -332,6 +343,24 @@ function Canvas (yMax) {
     }
   };
 
+  this.drawInfo = async function(xCell, yCell, cell) {
+    self.infoPanelxCell = xCell;
+    self.infoPanelyCell = yCell;
+    self.infoPanel = document.querySelector("#infoPanel");
+    self.infoPanel.hidden = false;
+    self.infoPanel.style.transform = `translate3d(${xCell * this.cellWidth}px, ${yCell * this.cellHeight}px, 0)`;
+    self.infoPanel.innerHTML = cell;
+  };
+
+  this.hideInfo = function() {
+    let infoPanel = document.querySelector("#infoPanel");
+    infoPanel.hidden = true;
+  };
+
+  this.updateInfo = function() {
+    self.infoPanel.innerHTML = game.currBoard.getCell(self.infoPanelxCell, self.infoPanelyCell);
+  };
+
   this.getMousePos = function (evt) {
     let rect = this.canvas.getBoundingClientRect();
     return {
@@ -339,17 +368,6 @@ function Canvas (yMax) {
       y: evt.clientY - rect.top
     };
   };
-
-  this.getTouchPos = function (evt) {
-    if (evt.touches.length > 1) return;
-
-    let rect = this.canvas.getBoundingClientRect();
-    return {
-      x: evt.changedTouches[0].clientX - rect.left,
-      y: evt.changedTouches[0].clientY - rect.top
-    };
-  };
-
 
   this.resizeCanvas = function() {
     game.running = false;
@@ -365,38 +383,37 @@ function Canvas (yMax) {
   //Handle mouse events
   this.canvas.addEventListener('mousemove', function(evt) {
     if(self.mouseDown){
-      let mousePos = self.getMousePos(evt);
-      let xCell = Math.trunc(mousePos.x / self.cellWidth);
-      let yCell = Math.trunc(mousePos.y / self.cellHeight);
-      game.currBoard.getCell(xCell, yCell).isAlive = 1;
-      game.currBoard.getCell(xCell, yCell).energy = 100;
-      self.drawCell(xCell, yCell, game.currBoard.getCell(xCell, yCell));
-    }
-  }, false);
-
-  this.canvas.addEventListener('touchmove', function(evt) {
-    if(self.touchDown){
-      let touchPos = self.getTouchPos(evt);
-      let xCell = Math.trunc(touchPos.x / self.cellWidth);
-      let yCell = Math.trunc(touchPos.y / self.cellHeight);
-      game.currBoard.getCell(xCell, yCell).isAlive = 1;
-      game.currBoard.getCell(xCell, yCell).energy = 100;
-      self.drawCell(xCell, yCell, game.currBoard.getCell(xCell, yCell));
+      if(self.isPopulating) {
+        let mousePos = self.getMousePos(evt);
+        let xCell = Math.trunc(mousePos.x / self.cellWidth);
+        let yCell = Math.trunc(mousePos.y / self.cellHeight);
+        let cell = game.currBoard.getCell(xCell, yCell);
+        cell.isAlive = 1;
+        cell.energy = 500;
+        self.drawCell(xCell, yCell, cell);
+      }
     }
   }, false);
 
   this.canvas.onmousedown = function(e) {
     self.mouseDown = true;
-  };
-  this.canvas.onmouseup = function(e) {
-    self.mouseDown = false;
+    if (!self.isPopulating) {
+      if (self.isShowingInfoPanel) {
+        self.isShowingInfoPanel = false;
+        self.hideInfo();
+      } else {
+        let mousePos = self.getMousePos(e);
+        let xCell = Math.trunc(mousePos.x / self.cellWidth);
+        let yCell = Math.trunc(mousePos.y / self.cellHeight);
+        let cell = game.currBoard.getCell(xCell, yCell);
+        self.drawInfo(xCell, yCell, cell);
+        self.isShowingInfoPanel = true;
+      }
+    }
   };
 
-  this.canvas.ontouchstart = function(e) {
-    self.touchDown = true;
-  };
-  this.canvas.ontouchend = function(e) {
-    self.touchDown = false;
+  this.canvas.onmouseup = function(e) {
+    self.mouseDown = false;
   };
 
   this.playButton.onclick = function(){
@@ -417,10 +434,13 @@ function Canvas (yMax) {
   };
 
   this.populateButton.onclick = function(){
-    game.running = false;
-    game.currBoard.randPopulate();
-    self.drawBoard(game.currBoard);
-    game.running = true;
+    if(self.isPopulating) {
+      self.isPopulating = false;
+      self.populateButton.value = "Infoing"
+    } else {
+      self.isPopulating = true;
+      self.populateButton.value = "Populating"
+    }
   };
 
   document.body.onkeyup = function(e){

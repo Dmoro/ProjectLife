@@ -6,9 +6,26 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Game of Life</title>
   <meta name="description" content="Test">
+
+  <style>
+    #infoPanel {
+      text: "hello world";
+      width: 100px;
+      height: 100px;
+      border: 1px #EDEDED solid;
+      overflow: hidden;
+      background-color: gold;
+      cursor: pointer;
+      transform: translate3d(50px, 50px, 0);
+    }
+  </style>
+
 </head>
 
 <body>
+  <div id="infoPanel">
+    Hello World
+  </div>
   <center>
     <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid #000000;">
       Your browser does not support the HTML5 canvas tag.
