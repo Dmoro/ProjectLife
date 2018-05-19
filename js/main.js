@@ -3,7 +3,7 @@
 
 
 
-let game = new Game(1000);
+let game = new Game(300);
 game.run();
 
 function Game (speed) {
@@ -24,7 +24,7 @@ function Game (speed) {
   this.KLASS_MIN = 0;
   this.speed = speed;
   this.running = true;
-  this.xCellNum = 20;
+  this.xCellNum = 30;
 
 
   this.gameOfLifeRules = function (board) {
@@ -232,7 +232,7 @@ function Cell(isAlive, energy, klass, mybrain){
   };
 
   this.toString = function(){
-    return `Cell: age: ${this.age}, alive ${this.isAlive}, energy ${this.energy}, klass ${this.klass}, brain ${this.mybrain}`;
+    return `Cell: age:${this.age} alive:${this.isAlive} energy:${Math.trunc(this.energy)} klass:${this.klass} brain:${this.mybrain}`;
   }
 
 }
@@ -389,11 +389,13 @@ function Canvas (yMax) {
     self.infoPanel.hidden = false;
     self.infoPanel.style.transform = `translate3d(${xCell * this.cellWidth}px, ${yCell * this.cellHeight}px, 0)`;
     self.infoPanel.innerHTML = cell;
+    self.isShowingInfoPanel = true;
   };
 
   this.hideInfo = function() {
     let infoPanel = document.querySelector("#infoPanel");
     infoPanel.hidden = true;
+    self.isShowingInfoPanel = false;
   };
 
   this.updateInfo = function() {
@@ -438,7 +440,6 @@ function Canvas (yMax) {
     self.mouseDown = true;
     if (!self.isPopulating) {
       if (self.isShowingInfoPanel) {
-        self.isShowingInfoPanel = false;
         self.hideInfo();
       } else {
         let mousePos = self.getMousePos(e);
@@ -446,7 +447,6 @@ function Canvas (yMax) {
         let yCell = Math.trunc(mousePos.y / self.cellHeight);
         let cell = game.currBoard.getCell(xCell, yCell);
         self.drawInfo(xCell, yCell, cell);
-        self.isShowingInfoPanel = true;
       }
     }
   };
@@ -475,9 +475,10 @@ function Canvas (yMax) {
   this.populateButton.onclick = function(){
     if(self.isPopulating) {
       self.isPopulating = false;
-      self.populateButton.value = "Infoing"
+      self.populateButton.value = "Look at Info"
     } else {
       self.isPopulating = true;
+      self.hideInfo();
       self.populateButton.value = "Populating"
     }
   };
