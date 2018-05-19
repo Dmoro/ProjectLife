@@ -39,18 +39,15 @@ function Game (speed) {
         let cell = board.getCell(x,y);
         if(cell.isAlive === 1) { //live cell
           if (neighbors < 2 || neighbors > 3) { //kill lonely or overcrowded cells
-            let newCell = new Cell(0,0,0,null);
-            nextBoard.setCell(x, y, newCell);
-            this.canvas.drawCell(x,y, newCell);
+            nextBoard.getCell(x, y).isAlive = 0;
+            this.canvas.drawCell(x,y, nextBoard.getCell(x, y));
           } else {
-            let newCell = new Cell(1,0,0,null);
-            nextBoard.setCell(x, y, newCell);
+            nextBoard.getCell(x, y).isAlive = 1;
           }
         } else if (cell.isAlive === 0) { //dead cell
           if (neighbors === 3) { //create new cells
-            let newCell = new Cell(1,0,0,null);
-            nextBoard.setCell(x, y, newCell);
-            this.canvas.drawCell(x,y, newCell);
+            nextBoard.getCell(x, y).isAlive = 1;
+            this.canvas.drawCell(x,y, nextBoard.getCell(x, y));
           }
         }
 
