@@ -1,4 +1,8 @@
 "use strict";
+//constants
+
+
+
 let game = new Game(100);
 game.run();
 
@@ -14,20 +18,17 @@ function Game (speed) {
   // if energy is given to cell of lower class, that cell is killed and the original cell reproduces there
   // if energy given to cell of higher class, that energy is transferred
   // if energy is taken (negative energy) from lower class or higher class, the energy is simply taken.
-
-  this.ENERGY_MAX = 100;
+  this.ENERGY_MAX = 1000;
   this.ENERGY_MIN = 0;
-  this.CLASS_MAX = 100;
-  this.CLASS_MIN = 0;
+  this.KLASS_MAX = 100;
+  this.KLASS_MIN = 0;
+
 
   this.speed = speed;
   this.running = true;
-  this.canvas = new Canvas(100);
-  this.currBoard = new Board(this.canvas.xMax, this.canvas.yMax);
-  this.currBoard.randPopulate();
-  this.canvas.drawBoard(this.currBoard);
 
-  this.gameOfLifeRules = function(board){
+
+  this.gameOfLifeRules = function (board) {
     let nextBoard = new Board(this.canvas.xMax, this.canvas.yMax);
     let boardXmax = Math.min(board.xMax, nextBoard.xMax);
     let boardYmax = Math.min(board.yMax, nextBoard.yMax);
@@ -36,28 +37,104 @@ function Game (speed) {
       for (let y = 0; y < boardYmax; y++) {
         //game of life
         let neighbors = board.countNeighbors(x, y);
-        let cell = board.getCell(x,y);
-        if(cell.isAlive === 1) { //live cell
+        let cell = board.getCell(x, y);
+        if (cell.isAlive === 1) { //live cell
           if (neighbors < 2 || neighbors > 3) { //kill lonely or overcrowded cells
             nextBoard.getCell(x, y).isAlive = 0;
-            this.canvas.drawCell(x,y, nextBoard.getCell(x, y));
+            this.canvas.drawCell(x, y, nextBoard.getCell(x, y));
           } else {
             nextBoard.getCell(x, y).isAlive = 1;
           }
         } else if (cell.isAlive === 0) { //dead cell
           if (neighbors === 3) { //create new cells
             nextBoard.getCell(x, y).isAlive = 1;
-            this.canvas.drawCell(x,y, nextBoard.getCell(x, y));
+            this.canvas.drawCell(x, y, nextBoard.getCell(x, y));
           }
         }
 
       }
     }
+    return nextBoard;
+  };
 
+  this.newRules = function (board) {
+    let nextBoard = new Board(this.canvas.xMax, this.canvas.yMax);
+    let boardXmax = Math.min(board.xMax, nextBoard.xMax);
+    let boardYmax = Math.min(board.yMax, nextBoard.yMax);
+
+    for (let x = 0; x < boardXmax; x++) {
+      for (let y = 0; y < boardYmax; y++) {
+        let oldcell = board.getCell(x, y);
+        if (oldcell.isAlive === 0) { continue; } //skip dead cells
+
+        console.log(oldcell);
+
+        let cell = oldcell.deepCopy();
+
+        //adjust cell body
+        if (cell.energy <= this.ENERGY_MIN) {
+          cell.kill();
+          this.canvas.drawCell(x, y, cell);
+          continue;
+        }
+
+        //add energy from sun
+        cell.addEnergy((1 - (cell.klass / this.KLASS_MAX)) * 10);
+
+        //take away energy from living
+        cell.takeEnergy(20);
+
+        //brain in
+        let pos = {above: [x, y + 1], right: [x + 1, y], bottom: [x, y - 1], left: [x - 1, y]};
+        let brainInput =
+          [board.getCell(pos.above[0], pos.above[1]).energy, board.getCell(pos.above[0], pos.above[1]).klass, //above
+          board.getCell(pos.right[0], pos.right[1]).energy, board.getCell(pos.right[0], pos.right[1]).klass, //right
+          board.getCell(pos.bottom[0], pos.bottom[1]).energy, board.getCell(pos.bottom[0], pos.bottom[1]).klass, //bottom
+          board.getCell(pos.left[0], pos.left[1]).energy, board.getCell(pos.left[0], pos.left[1]).klass,]; //left
+        let brainOut = cell.runBrain(brainInput);
+
+        //check brain out
+        if (brainOut.length !== 4) {
+          console.log("ERROR! incorrect brain output");
+          continue;
+        }
+
+        //implement brain out
+        pos = [[x, y + 1], [x + 1, y], [x, y - 1], [x - 1, y]];
+        for (let i = 0; i < brainOut.length; i++) {
+          let rcellNew = nextBoard.getCell(pos[i][0], pos[i][1])
+          let rcellOld = board.getCell(pos[i][0], pos[i][1]);
+
+          if (brainOut[i] < 0) { //take energy
+            rcellNew.takeEnergy(Math.abs(brainOut[i]));
+            cell.addEnergy(Math.abs(brainOut[i]));
+
+          } else if (brainOut[i] > 0) { //place energy
+            if (rcellOld.klass <= cell.klass) { //check if can reproduce
+              nextBoard.setCell(pos[i][0], pos[i][1], new Cell(1, brainOut[i], addRandomInt(cell.klass, 5)));
+              cell.takeEnergy(brainOut[i]);
+            } else { //if not reproduce, simply give energy
+              rcellNew.addEnergy(brainOut[i]);
+              cell.takeEnergy(brainOut[i]);
+            }
+          }
+
+          this.canvas.drawCell(x, y, rcellNew);
+        }
+        nextBoard.setCell(x, y, cell);
+        this.canvas.drawCell(x, y, cell);
+      }
+    }
     return nextBoard;
   };
 
   this.run = async function(){
+    //init
+    this.canvas = new Canvas(100);
+    this.currBoard = new Board(this.canvas.xMax, this.canvas.yMax);
+    //this.currBoard.randPopulate();
+    this.canvas.drawBoard(this.currBoard);
+
     //Keep running
     // noinspection InfiniteLoopJS
     for (let turns = 0; ; turns++) {
@@ -71,7 +148,8 @@ function Game (speed) {
       //this.canvas.drawBoard(this.currBoard); Much slower
       if (this.running) {
         //console.log(turns);
-        this.currBoard = this.gameOfLifeRules(this.currBoard);
+        //this.currBoard = this.gameOfLifeRules(this.currBoard);
+        this.currBoard = this.newRules(this.currBoard);
       }
     }
   };
@@ -79,8 +157,19 @@ function Game (speed) {
 
 function Cell(isAlive, energy, klass, mybrain){
   this.isAlive = isAlive;
-  this.energy = energy;
-  this.klass = klass;
+
+  if(energy <= game.ENERGY_MAX) {
+    this.energy = energy;
+  } else {
+    this.energy = game.ENERGY_MAX;
+  }
+
+  if(klass <= game.KLASS_MAX) {
+    this.klass = klass;
+  } else {
+    this.klass = game.KLASS_MAX;
+  }
+
   this.mybrain = mybrain;
 
   this.clear = function(){
@@ -93,6 +182,32 @@ function Cell(isAlive, energy, klass, mybrain){
   this.kill = function(){
     this.isAlive = 0;
   };
+
+  this.runBrain = function(input){
+    //TODO
+    return [0, 0 ,0 ,0];
+  };
+
+  this.takeEnergy = function(amount) {
+    if(this.energy - amount >= 0){
+      this.energy = this.energy - amount;
+    } else {
+      this.energy = 0;
+    }
+  };
+
+  this.addEnergy = function(amount) {
+    this.energy = this.energy + amount;
+  }
+
+  this.deepCopy = function(){
+    return new Cell(this.isAlive, this.energy, this.klass, this.mybrain); //TODO make deep copy of brain
+  }
+
+  this.toString = function(){
+    return `Cell: alive ${this.isAlive}, energy ${this.energy}, klass ${this.klass}, brain ${this.mybrain}`;
+  }
+
 }
 
 function Board (xMax, yMax) {
@@ -115,6 +230,9 @@ function Board (xMax, yMax) {
   };
 
   this.getCell = function (x, y) {
+    if(x > this.xMax - 1 || x < 0) return new Cell(0,0,0,null);
+    if(y > this.yMax - 1 || y < 0) return new Cell(0,0,0,null);
+    //console.log(`Getting [${x}, ${y}] and the maxes are [${this.xMax}, ${this.yMax}] `)
     return this.board[x][y];
   };
 
@@ -159,7 +277,7 @@ function Canvas (yMax) {
     this.BUTTON_HEIGHT = this.clientHeight * 0.05;
     this.BUTTON_WIDTH = (this.clientWidth - 100) / this.NUM_BUTTONS;
     this.CELL_COLOR = "#ffffff";
-    this.BACK_COLOR = "#000000";
+    this.BACK_COLOR = "#ffffff";
     this.BORDER_WIDTH = 1;
 
     this.canvas = document.getElementById("myCanvas");
@@ -188,9 +306,14 @@ function Canvas (yMax) {
     this.cvs.fillStyle=self.BACK_COLOR;
     this.cvs.fillRect((x * this.cellWidth), (y * this.cellHeight ), this.cellWidth, this.cellHeight);
 
+    let brightness = cell.energy / game.ENERGY_MAX;
+    let klassColor = cell.klass / game.KLASS_MAX;
+    let cellColor = rgbToHex((brightness*0.5 + klassColor*0.5) * 255,
+                             (brightness*0.5 + Math.abs(1-klassColor)*0.5) * 255,
+                             (brightness) * 255);
     //draw cell
     if(cell.isAlive === 1) {
-      this.cvs.fillStyle=self.CELL_COLOR;
+      this.cvs.fillStyle = cellColor;
       this.cvs.fillRect((x * this.cellWidth) + self.BORDER_WIDTH, (y * this.cellHeight ) + self.BORDER_WIDTH,
                         this.cellWidth - (2* self.BORDER_WIDTH), this.cellHeight - (2* self.BORDER_WIDTH));
     }
@@ -246,6 +369,7 @@ function Canvas (yMax) {
       let xCell = Math.trunc(mousePos.x / self.cellWidth);
       let yCell = Math.trunc(mousePos.y / self.cellHeight);
       game.currBoard.getCell(xCell, yCell).isAlive = 1;
+      game.currBoard.getCell(xCell, yCell).energy = 100;
       self.drawCell(xCell, yCell, game.currBoard.getCell(xCell, yCell));
     }
   }, false);
@@ -256,6 +380,7 @@ function Canvas (yMax) {
       let xCell = Math.trunc(touchPos.x / self.cellWidth);
       let yCell = Math.trunc(touchPos.y / self.cellHeight);
       game.currBoard.getCell(xCell, yCell).isAlive = 1;
+      game.currBoard.getCell(xCell, yCell).energy = 100;
       self.drawCell(xCell, yCell, game.currBoard.getCell(xCell, yCell));
     }
   }, false);
