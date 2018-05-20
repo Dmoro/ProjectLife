@@ -10,6 +10,14 @@ function addRandomInt(origin, rand) {
   return origin + getRandomIntRange(-rand, rand)
 }
 
+function getRandomFloatRange(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function addRandomFloat(origin, rand) {
+  return origin + getRandomFloatRange(-rand, rand)
+}
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -23,4 +31,8 @@ function componentToHex(c) {
 //author: https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
 function rgbToHex(r, g, b) {
   return "#" + componentToHex(Math.trunc(r)) + componentToHex(Math.trunc(g)) + componentToHex(Math.trunc(b));
+}
+
+function createArray(length, val){
+  return Array.apply(null, Array(length)).map(Number.prototype.valueOf,val);
 }

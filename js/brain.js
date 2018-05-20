@@ -1025,7 +1025,7 @@ var NeuralNetwork = function () {
       };
       Object.keys(NeuralNetwork.trainDefaults).forEach(function (key) {
         if (validations.hasOwnProperty(key) && !validations[key](options[key])) {
-          throw new Error('[' + key + ', ' + options[key] + '] is out of normal training range, your network will probably not train.');
+          //throw new Error('[' + key + ', ' + options[key] + '] is out of normal training range, your network will probably not train.');
         }
       });
     }
@@ -13017,7 +13017,7 @@ var utils = require('../../core/utils');
 
 /**
  * @class CPUFunctionNode
- * 
+ *
  * @extends BaseFunctionNode
  *
  * @desc [INTERNAL] Represents a single function, inside JS
@@ -14133,7 +14133,7 @@ module.exports = function (_KernelBase) {
   * @constructor CPUKernel
   *
   * @desc Kernel Implementation for CPU.
-  * 
+  *
   * <p>Instantiates properties to the CPU Kernel.</p>
   *
   * @extends KernelBase
@@ -14175,7 +14175,7 @@ module.exports = function (_KernelBase) {
   * @function
   * @name validateOptions
   *
-  * @desc Validate options related to CPU Kernel, such as 
+  * @desc Validate options related to CPU Kernel, such as
   * dimensions size, and auto dimension support.
   *
   */
@@ -14205,8 +14205,8 @@ module.exports = function (_KernelBase) {
    * @function
    * @name build
    *
-   * @desc Builds the Kernel, by generating the kernel 
-   * string using thread dimensions, and arguments 
+   * @desc Builds the Kernel, by generating the kernel
+   * string using thread dimensions, and arguments
    * supplied to the kernel.
    *
    * <p>If the graphical flag is enabled, canvas is used.</p>
@@ -14276,7 +14276,7 @@ module.exports = function (_KernelBase) {
    * @name getKernelString
    *
    * @desc Generates kernel string for this kernel program.
-   * 
+   *
    * <p>If sub-kernels are supplied, they are also factored in.
    * This string can be saved by calling the `toString` method
    * and then can be reused later.</p>
@@ -14394,11 +14394,11 @@ module.exports = function (_KernelBase) {
    * @function
    * @name precompileKernelObj
    *
-   * @desc Precompile the kernel into a single object, 
+   * @desc Precompile the kernel into a single object,
    * that can be used for building the execution kernel subsequently.
    *
    * @param {Array} argTypes - Array of argument types
-   *     
+   *
    * Return:
    *     Compiled kernel {Object}
    *
@@ -14423,7 +14423,7 @@ module.exports = function (_KernelBase) {
    *
    * @desc Takes a previously precompiled kernel object,
    * and complete compilation into a full kernel
-   * 
+   *
    * @returns {Function} Compiled kernel
    *
    */
@@ -14484,7 +14484,7 @@ module.exports = function (_RunnerBase) {
   * @constructor CPURunner
   *
   * @desc Instantiates a Runner instance for the kernel.
-  * 
+  *
   * @extends RunnerBase
   *
   * @param {Object} settings - Settings to instantiate properties in RunnerBase, with given values
@@ -14507,7 +14507,7 @@ module.exports = function (_RunnerBase) {
   * @name getMode()
   *
   * Return the current mode in which gpu.js is executing.
-  * 
+  *
   * @returns {String} The current mode; "cpu".
   *
   */
@@ -14536,11 +14536,11 @@ module.exports = function () {
   *
   * @desc This handles all the raw state, converted state, etc. of a single function.
   * [INTERNAL] A collection of functionNodes.
-  * 
+  *
   * @prop {Object} nodeMap - Object map, where nodeMap[function] = new FunctionNode;
   * @prop {Object} gpu - The current gpu instance bound to this builder
   * @prop {Object} rootKernel - The root kernel object, contains the paramNames, dimensions etc.
-  * 
+  *
   */
 	function FunctionBuilderBase(gpu) {
 		_classCallCheck(this, FunctionBuilderBase);
@@ -14898,11 +14898,11 @@ module.exports = function () {
 
 	/**
   * @constructor FunctionNodeBase
-  * 
+  *
   * @desc Represents a single function, inside JS, webGL, or openGL.
-  * 
+  *
   * <p>This handles all the raw state, converted state, etc. Of a single function.</p>
-  * 
+  *
   * @prop {String} functionName - Name of the function
   * @prop {Function} jsFunction - The JS Function the node represents
   * @prop {String} jsFunctionString - jsFunction.toString()
@@ -14915,7 +14915,7 @@ module.exports = function () {
   * @prop {String[]} initVariables - List of variables initialized in the function
   * @prop {String[]} readVariables - List of variables read operations occur
   * @prop {String[]} writeVariables - List of variables write operations occur
-  * 
+  *
   * @param {GPU} gpu - The GPU instance
   * @param {String} functionName - Function name to assume, if its null, it attempts to extract from the function
   * @param {Function|String} jsFunction - JS Function to do conversion
@@ -15050,9 +15050,9 @@ module.exports = function () {
 			return this;
 		}
 		/**
-   * 
+   *
    * Core Functions
-   * 
+   *
    */
 
 		/**
@@ -15239,7 +15239,7 @@ module.exports = function () {
    * @function
    * @name getUserParamName
    *
-   * @desc Return the name of the *user parameter*(subKernel parameter) corresponding 
+   * @desc Return the name of the *user parameter*(subKernel parameter) corresponding
    * to the parameter supplied to the kernel
    *
    * @param {String} paramName - Name of the parameter
@@ -15311,13 +15311,13 @@ module.exports = function () {
 
 	/**
   * @constructor BaseKernel
-  * 
-  * @desc Implements the base class for Kernels, and is used as a 
+  *
+  * @desc Implements the base class for Kernels, and is used as a
   * parent class for all Kernel implementations.
   *
-  * This contains the basic methods needed by all Kernel implementations, 
+  * This contains the basic methods needed by all Kernel implementations,
   * like setDimensions, addSubKernel, etc.
-  * 
+  *
   * @prop {Array} paramNames - Name of the parameters of the kernel function
   * @prop {String} fnString - Kernel function as a String
   * @prop {Array} dimensions - Dimensions of the kernel function, this.thread.x, etc.
@@ -15447,7 +15447,7 @@ module.exports = function () {
 		}
 
 		/**
-   * @memberOf BaseKernel# 
+   * @memberOf BaseKernel#
    * @function
    * @name setDebug
    *
@@ -15587,7 +15587,7 @@ module.exports = function () {
    * @name setCanvas
    *
    * @desc Bind the canvas to kernel
-   * 
+   *
    * @param {Canvas} canvas - Canvas to bind
    *
    */
@@ -15605,7 +15605,7 @@ module.exports = function () {
    * @name setCanvas
    *
    * @desc Bind the webGL instance to kernel
-   * 
+   *
    * @param {Canvas} webGL - webGL instance to bind
    *
    */
@@ -15681,7 +15681,7 @@ module.exports = function () {
 			});
 		}
 
-		/** 
+		/**
    * @memberOf BaseKernel#
    * @function
    * @name addSubKernel
@@ -15705,7 +15705,7 @@ module.exports = function () {
 			return this;
 		}
 
-		/** 
+		/**
    * @memberOf BaseKernel#
    * @function
    * @name addSubKernelProperty
@@ -16013,7 +16013,7 @@ var constantsPrefix = 'this.constants.';
 var DECODE32_ENCODE32 = /decode32\(\s+encode32\(/g;
 var ENCODE32_DECODE32 = /encode32\(\s+decode32\(/g;
 
-/** 
+/**
  * @class WebGLFunctionNode
  *
  * @desc [INTERNAL] Takes in a function node, and does all the AST voodoo required to generate its respective webGL code.
@@ -17209,7 +17209,7 @@ function ensureIndentifierType(paramName, expectedType, ast, funcParam) {
  * @name webgl_regex_optimize
  *
  * @desc [INTERNAL] Takes the near final webgl function string, and do regex search and replacments.
- * For voodoo optimize out the following: 
+ * For voodoo optimize out the following:
  *
  * - decode32(encode32( <br>
  * - encode32(decode32( <br>
@@ -18572,7 +18572,7 @@ module.exports = function (_RunnerBase) {
   *
  	 * @extends RunnerBase
   	 * @desc Instantiates a Runner instance for the kernel.
-  * 
+  *
   * @param {Object} settings - Settings to instantiate properties in RunnerBase, with given values
   *
   */
@@ -18592,7 +18592,7 @@ module.exports = function (_RunnerBase) {
   * @name getMode
   *
   * @desc Return the current mode in which gpu.js is executing.
-  * 
+  *
   * @returns {String} The current mode; "cpu".
   *
   */
@@ -18648,7 +18648,7 @@ module.exports = function (_WebGLKernel) {
 		key: 'validateOptions',
 
 
-		/** 
+		/**
    * @memberOf WebGLValidatorKernel#
    * @function
    * @name validateOptions
@@ -19387,7 +19387,7 @@ module.exports = function (_WebGLKernel) {
 		key: 'validateOptions',
 
 
-		/** 
+		/**
    * @memberOf WebGLValidatorKernel#
    * @function
    * @name validateOptions
@@ -19422,7 +19422,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var UtilsCore = require("./utils-core");
 
 /**
- * This is a minimalistic version of GPU.js used 
+ * This is a minimalistic version of GPU.js used
  * to run precompiled GPU.JS code.
  *
  * This intentionally excludes the JS AST compiller : which is 400kb alone/
@@ -19445,7 +19445,7 @@ module.exports = function () {
    * @memberOf GPUCore
    *
    * @description Validates the KernelObj to comply with the defined format
-   * Note that this does only a limited sanity check, and does not  
+   * Note that this does only a limited sanity check, and does not
    * guarantee a full working validation.
    *
    * For the kernel object format see : <kernelObj-format>
@@ -19504,7 +19504,7 @@ module.exports = function () {
    * @param {Object} inOpt - [Optional] the option overrides to use
    *
    * @returns {Function} The kernel function
-   * 
+   *
    */
 
 	}, {
@@ -20000,7 +20000,7 @@ module.exports = function () {
   * @memberOf Texture#
   *
   * @desc Converts the Texture into a JavaScript Array.
-  * 
+  *
   * @param {Object} The `gpu` Object
   *
   */
@@ -20324,12 +20324,12 @@ module.exports = UtilsCore;
 'use strict';
 
 /**
- * 
+ *
  * @classdesc Various utility functions / snippets of code that GPU.JS uses internally.\
  * This covers various snippets of code that is not entirely gpu.js specific (ie. may find uses elsewhere)
  *
  * Note that all methods in this class are *static* by nature `Utils.functionName()`
- * 
+ *
  * @class Utils
  * @extends UtilsCore
  *
@@ -20759,7 +20759,7 @@ var Utils = function (_UtilsCore) {
    * @static
    *
    * Return the dimension of an array.
-   * 
+   *
    * @param {Array|String} x - The array
    * @param {number} [pad] - To include padding in the dimension calculation [Optional]
    *
