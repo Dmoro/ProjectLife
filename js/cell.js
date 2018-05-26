@@ -77,8 +77,8 @@ function Cell(isAlive, energy, klass, mybrain){
   };
 
   this.toString = function(){
-    return `Cell: age:${this.age} alive:${this.isAlive} <br /> energy:${Math.trunc(this.energy)} <br /> klass:${this.klass} 
-            <br /> brain:${Math.trunc(this.lastBrainOut[0])} ${Math.trunc(this.lastBrainOut[1])} 
+    return `<b>Alive:</b> ${this.isAlive} <br /> <b>Age:</b> ${this.age} <br /> <b>Energy:</b> ${Math.trunc(this.energy)} <br /> <b>Klass:</b> ${this.klass} 
+            <br /> <b>Brain:</b> ${Math.trunc(this.lastBrainOut[0])} ${Math.trunc(this.lastBrainOut[1])} 
             ${Math.trunc(this.lastBrainOut[2])} ${Math.trunc(this.lastBrainOut[3])}`;
   }
 

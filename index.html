@@ -2,35 +2,43 @@
 <html class="no-js" lang="">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Game of Life</title>
-  <meta name="description" content="Test">
+  <!-- Material Design Lite -->
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <style>
     #infoPanel {
-      display: block;
-      width: 200px;
-      height: 100px;
-      border: 0px #ed2c2c solid;
-      overflow: hidden;
+      display: none;
+      width: 150px;
+      height: 120px;
+      margin-left: -6px;
+      margin-top: -119px;
       background-color: gold;
-      cursor: pointer;
-      margin-top: -102px;
-      transform: translate3d(100px, 100px, 0);
+      padding: 1px;
+      font-family: "Arial";
+      font-size: 1.05em;
+      overflow-x: scroll;
+      white-space: nowrap;
+      transform: translate3d(0px, 0px, 0);
     }
 
-    aside {
+    .controlPanel {
       position: fixed;
       width: 10%;
       height: 100%;
       top: 0;
       right: 0;
-      background-color:#f0eaea;
+      padding: 5px;
       text-align:center;
-      font-style:italic;
-      border:double 3px #b200ff;
     }
+
+    .controlPanelElements {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
     canvas {
       position: fixed;
       width: 90%;
@@ -40,7 +48,6 @@
       background-color: #d6fffc;
     }
   </style>
-
 </head>
 
 <body>
@@ -49,11 +56,19 @@
     <div id="infoPanel">Hello World</div>
   </div>
 
-  <aside>
-    <input id="playButton" type="button" value="Pause" style="height:20px;width:200px" />
-    <input id="resetButton" type="button" value="Reset" style="height:20px;width:200px"  />
-    <input id="populateButton" type="button" value="Populate" style="height:20px;width:200px"  />
-  </aside>
+
+  <div class="controlPanel mdl-card mdl-shadow--16dp">
+    <h3>Intelligent Design</h3>
+    <input id="playButton" type="button" value="Pause" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
+    <input id="resetButton" type="button" value="Reset" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
+    <input id="populateButton" type="button" value="Populate" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
+
+    <h4>Speed</h4>
+    <p style="width:220px; margin-left: -20px;">
+      <input class="mdl-slider mdl-js-slider" type="range" id="speedSlider" min="0" max="1" value="50" step="0.01">
+    </p>
+
+  </div>
 
   <script src="js/brain.js"></script>
   <script src="js/utils.js"></script>

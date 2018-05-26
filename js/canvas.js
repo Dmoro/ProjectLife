@@ -64,7 +64,7 @@ function Canvas (yMax) {
     self.infoPanelxCell = xCell;
     self.infoPanelyCell = yCell;
     self.infoPanel = document.querySelector("#infoPanel");
-    self.infoPanel.display = "block";
+    self.infoPanel.style.display = "block";
     self.infoPanel.style.transform = `translate3d(${xCell * this.cellWidth}px, ${yCell * this.cellHeight}px, 0)`;
     self.infoPanel.innerHTML = cell;
     self.isShowingInfoPanel = true;
@@ -72,7 +72,7 @@ function Canvas (yMax) {
 
   this.hideInfo = function() {
     let infoPanel = document.querySelector("#infoPanel");
-    infoPanel.display = "none";
+    infoPanel.style.display = "none";
     self.isShowingInfoPanel = false;
   };
 

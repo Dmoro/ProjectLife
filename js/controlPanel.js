@@ -3,6 +3,7 @@ function ControlPanel() {
   self.playButton = document.getElementById("playButton");
   self.resetButton = document.getElementById("resetButton");
   self.populateButton = document.getElementById("populateButton");
+  self.speedSlider = document.getElementById("speedSlider");
 
   this.playButton.onclick = function(){
     if(game.running) {
@@ -30,6 +31,12 @@ function ControlPanel() {
       game.canvas.hideInfo();
       self.populateButton.value = "Populating"
     }
+  };
+
+  this.speedSlider.oninput = function(){
+    let maxSpeed = 2000;
+    game.speed = maxSpeed * Math.pow((1.0-self.speedSlider.value), 3);
+    console.log("Speed: " + game.speed);
   };
 
   document.body.onkeyup = function(e){
