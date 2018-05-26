@@ -9,33 +9,59 @@
 
   <style>
     #infoPanel {
+      display: block;
       width: 200px;
       height: 100px;
-      border: 0px #EDEDED solid;
+      border: 0px #ed2c2c solid;
       overflow: hidden;
       background-color: gold;
       cursor: pointer;
       margin-top: -102px;
-      transform: translate3d(0px, 1000px, 0);
+      transform: translate3d(100px, 100px, 0);
+    }
+
+    aside {
+      position: fixed;
+      width: 10%;
+      height: 100%;
+      top: 0;
+      right: 0;
+      background-color:#f0eaea;
+      text-align:center;
+      font-style:italic;
+      border:double 3px #b200ff;
+    }
+    canvas {
+      position: fixed;
+      width: 90%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: #d6fffc;
     }
   </style>
 
 </head>
 
 <body>
-  <div id="infoPanel" hidden="true">Hello World</div>
-  <center>
-    <canvas id="myCanvas" width="1000" height="1000" style="border:1px solid #000000;">
-      Your browser does not support the HTML5 canvas tag.
-    </canvas>
+  <div>
+    <canvas id="boardCanvas"></canvas>
+    <div id="infoPanel">Hello World</div>
+  </div>
+
+  <aside>
     <input id="playButton" type="button" value="Pause" style="height:20px;width:200px" />
     <input id="resetButton" type="button" value="Reset" style="height:20px;width:200px"  />
     <input id="populateButton" type="button" value="Populate" style="height:20px;width:200px"  />
-  </center>
+  </aside>
 
   <script src="js/brain.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/neuralnetwork.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/canvas.js"></script>
+  <script src="js/cell.js"></script>
+  <script src="js/controlPanel.js"></script>
   <script src="js/main.js"></script>
 </body>
 
