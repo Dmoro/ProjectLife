@@ -8,8 +8,7 @@
 function GameNN(inputSize, outputSize){
   this.INPUT_SIZE = inputSize;
   this.OUTPUT_SIZE = outputSize;
-  this.RAND_CHANGE = 0.1;
-  this.MAX_OUTPUT = 100;
+  this.MAX_OUTPUT = 1000;
 
   this.CONFIG = {
     binaryThresh: 0.5,     // ¯\_(ツ)_/¯
@@ -30,7 +29,7 @@ function GameNN(inputSize, outputSize){
     let netResults = net.run(input);
     let cleanResults = [];
     for(let i = 0; i < netResults.length; i++){
-      cleanResults[i] =  (netResults[i] * (2 * this.MAX_OUTPUT)) - this.MAX_OUTPUT;
+      cleanResults[i] =  (netResults[i]-0.5) * this.MAX_OUTPUT;
     }
     return cleanResults;
   };
@@ -46,11 +45,11 @@ function GameNN(inputSize, outputSize){
         let nodeWeights = net.weights[layer][node];
         for(let w = 0; w < nodeWeights.length; w++){
           let weight = net.weights[layer][node][w];
-          newNet.weights[layer][node][w] = weight + Math.random() - Math.random()//addRandomFloat(weight, this.RAND_CHANGE);
+          newNet.weights[layer][node][w] = weight + Math.random() - Math.random();
         }
 
         let bias = net.biases[layer][node];
-        newNet.biases[layer][node] = bias + Math.random() - Math.random()//addRandomFloat(bias, this.RAND_CHANGE);
+        newNet.biases[layer][node] = bias + Math.random() - Math.random();
       }
     }
     return newNet;
@@ -65,14 +64,13 @@ function GameNN(inputSize, outputSize){
 
   this.createSmartNet = function(){
     let net = new brain.NeuralNetwork({
-      binaryThresh: 0.5,     // ¯\_(ツ)_/¯
-      hiddenLayers: [3],     // array of ints for the sizes of the hidden layers in the network
-      activation: 'sigmoid', // Supported activation types ['sigmoid', 'relu', 'leaky-relu', 'tanh']
-      iterations: 100,
+      binaryThresh: 0.5,
+      hiddenLayers: [3],
+      activation: 'sigmoid',
+      iterations: 50,
       timeout: 100000,
     });
-    net.train([{input:  [0,0,0,0,0,0,0,0,0,0],
-                output: [0.5,0.5,0.5,0.5]}]);
+    net.train([{input:  [0,0,0,0,0,0,0,0,0,0], output: [0.5,0.5,0.5,0.5]}]);
     return net;
   };
 
@@ -84,21 +82,4 @@ function GameNN(inputSize, outputSize){
       }
     }
   };
-
-  // this.getNNData = function(net){
-  //   this.printNN(net);
-  //   let nnData = {
-  //     weights: {},
-  //     biases: {},
-  //   };
-  //   for (let layer = 1; layer <= net.outputLayer; layer++) {
-  //     for (let node = 0; node < net.sizes[layer]; node++) {
-  //       nnData.weights[layer] = {};
-  //       nnData.weights[layer][node] = net.weights[layer][node];
-  //       nnData.biases[layer] = {};
-  //       nnData.biases[layer][node] = net.biases[layer][node];
-  //     }
-  //   }
-  //   return nnData;
-  // };
 }
