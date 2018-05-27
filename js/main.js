@@ -21,7 +21,8 @@ function Game (speed) {
   this.KLASS_MIN = 0;
   this.speed = speed;
   this.running = true;
-  this.yCellNum = 30;
+  this.yCellNum = 60;
+  this.gameMode = 'Intel';
 
   this.start = function () {
     this.canvas = new Canvas(this.yCellNum);
@@ -37,8 +38,11 @@ function Game (speed) {
     for(let i = 0; i > -1 ; i++ ){
       if (this.running) {
         this.canvas.refreshScreen();
-        //this.currBoard = this.gameOfLifeRules(this.currBoard);
-        this.currBoard = this.newRules(this.currBoard);
+        if(this.gameMode === "Life") {
+          this.currBoard = this.gameOfLifeRules(this.currBoard);
+        } else {
+          this.currBoard = this.newRules(this.currBoard);
+        }
       }
       await sleep(this.speed);
     }

@@ -3,7 +3,12 @@ function ControlPanel() {
   self.playButton = document.getElementById("playButton");
   self.resetButton = document.getElementById("resetButton");
   self.populateButton = document.getElementById("populateButton");
+  self.infoButton = document.getElementById("lookInfoButton");
   self.speedSlider = document.getElementById("speedSlider");
+  self.titleText = document.getElementById("titleText");
+  self.gameModeBtnIntel = document.getElementById("chooseIntelligentDesign");
+  self.gameModeBtnLife = document.getElementById("chooseGameOfLife");
+  self.drawModeText = document.getElementById("drawMode");
 
   this.playButton.onclick = function(){
     if(game.running) {
@@ -22,15 +27,29 @@ function ControlPanel() {
     game.running = true;
   };
 
-  this.populateButton.onclick = function(){
-    if(game.canvas.isPopulating) {
-      game.canvas.isPopulating = false;
-      self.populateButton.value = "Look at Info"
-    } else {
-      game.canvas.isPopulating = true;
-      game.canvas.hideInfo();
-      self.populateButton.value = "Populating"
-    }
+  this.populateButton.onclick = function() {
+    game.canvas.isPopulating = true;
+    game.canvas.hideInfo();
+    self.drawModeText.innerText = "Populating";
+  };
+
+  this.infoButton.onclick = function() {
+    game.canvas.isPopulating = false;
+    self.drawModeText.innerText = "Looking at Info";
+  };
+
+  this.gameModeBtnIntel.onclick = function(){
+    self.titleText.innerHTML = "Intelligent Design";
+    game.currBoard.clearBoard();
+    game.gameMode = "Intel";
+    game.canvas.drawBoard(game.currBoard);
+  };
+
+  this.gameModeBtnLife.onclick = function(){
+    self.titleText.innerHTML = "Game of Life";
+    game.currBoard.clearBoard();
+    game.gameMode = "Life";
+    game.canvas.drawBoard(game.currBoard);
   };
 
   this.speedSlider.oninput = function(){
