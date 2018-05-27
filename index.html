@@ -9,17 +9,17 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <style>
-    #infoPanel {
+    .infoPanel {
       display: none;
-      width: 150px;
-      height: 120px;
-      margin-left: -6px;
-      margin-top: -119px;
-      background-color: gold;
-      padding: 1px;
-      font-family: "Arial";
+      width: 200px;
+      height: 140px;
+      margin-left: 0px;
+      margin-top: -145px;
+      padding: 4px;
+      background-color: white;
+      border-radius: 15px 50px 30px 5px;
       font-size: 1.05em;
-      overflow-x: scroll;
+      overflow-x: auto;
       white-space: nowrap;
       transform: translate3d(0px, 0px, 0);
     }
@@ -45,27 +45,27 @@
       height: 100%;
       top: 0;
       left: 0;
-      background-color: #d6fffc;
+      background-color: #000000;
     }
   </style>
 </head>
 
 <body>
+
   <div>
     <canvas id="boardCanvas"></canvas>
-    <div id="infoPanel">Hello World</div>
+    <div id="infoPanel" class="infoPanel">Hello World</div>
   </div>
-
 
   <div class="controlPanel mdl-card mdl-shadow--16dp">
     <h3>Intelligent Design</h3>
     <input id="playButton" type="button" value="Pause" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
     <input id="resetButton" type="button" value="Reset" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
-    <input id="populateButton" type="button" value="Populate" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
+    <input id="populateButton" type="button" value="Populating" class="controlPanelElements mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
 
     <h4>Speed</h4>
     <p style="width:220px; margin-left: -20px;">
-      <input class="mdl-slider mdl-js-slider" type="range" id="speedSlider" min="0" max="1" value="50" step="0.01">
+      <input class="mdl-slider mdl-js-slider" type="range" id="speedSlider" min="0" max="1" value="0.5" step="0.01">
     </p>
 
   </div>

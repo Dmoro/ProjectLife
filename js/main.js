@@ -1,6 +1,6 @@
 "use strict";
 let BrainManager = new GameNN(10, 4);
-let game = new Game(300);
+let game = new Game(250);
 game.start();
 
 function Game (speed) {

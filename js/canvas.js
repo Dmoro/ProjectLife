@@ -66,7 +66,7 @@ function Canvas (yMax) {
     self.infoPanel = document.querySelector("#infoPanel");
     self.infoPanel.style.display = "block";
     self.infoPanel.style.transform = `translate3d(${xCell * this.cellWidth}px, ${yCell * this.cellHeight}px, 0)`;
-    self.infoPanel.innerHTML = cell;
+    self.infoPanel.innerHTML = "<b style=\"font-size: 1.2em;\">Cell Info</b></br>" + cell;
     self.isShowingInfoPanel = true;
   };
 
@@ -77,7 +77,7 @@ function Canvas (yMax) {
   };
 
   this.updateInfo = function() {
-    self.infoPanel.innerHTML = game.currBoard.getCell(self.infoPanelxCell, self.infoPanelyCell);
+    self.infoPanel.innerHTML = "<b style=\"font-size: 1.2em;\">Cell Info</b></br>" + game.currBoard.getCell(self.infoPanelxCell, self.infoPanelyCell);
   };
 
   this.getMousePos = function (evt) {
