@@ -15,7 +15,7 @@ function Game (speed) {
   // if energy is given to cell of lower class, that cell is killed and the original cell reproduces there
   // if energy given to cell of higher class, that energy is transferred
   // if energy is taken (negative energy) from lower class or higher class, the energy is simply taken.
-  this.ENERGY_MAX = 10000;
+  this.ENERGY_MAX = 50000;
   this.ENERGY_MIN = 0;
   this.KLASS_MAX = 100;
   this.KLASS_MIN = 0;
@@ -86,9 +86,9 @@ function Game (speed) {
           continue;
         }
         //add energy from sun
-        cell.addEnergy((1 - (oldcell.klass / this.KLASS_MAX)) * 100);
+        cell.addEnergy((1 - (oldcell.klass / this.KLASS_MAX)) * 500);
         //take away energy from living
-        cell.takeEnergy(30);
+        cell.takeEnergy(50 + oldcell.klass);
         //brain in
         let pos = {above: [x, y + 1], right: [x + 1, y], bottom: [x, y - 1], left: [x - 1, y]};
         let brainInput =
@@ -111,7 +111,9 @@ function Game (speed) {
             if (rcellOld.isAlive === 0 || rcellOld.klass < oldcell.klass) { //check if can reproduce
               //console.log(`[${x},${y}] is reproducing. Giving ${brainOut[i]} energy to (${pos[i][0]},${pos[i][1]})`);
               let energyTaken = cell.takeEnergy(brainOut[i]);
-              nextBoard.setCell(pos[i][0], pos[i][1], new Cell(1, energyTaken, addRandomInt(cell.klass, 5), BrainManager.alterNet(cell.mybrain)));
+              nextBoard.setCell(pos[i][0], pos[i][1],
+                new Cell(1, energyTaken + board.getCell(pos[i][0], pos[i][1]).energy, addRandomInt(cell.klass, 5),
+                BrainManager.alterNet(cell.mybrain)));
             } else { //if not reproduce, simply give energy
               if (cell.takeEnergy(brainOut[i]) >= brainOut[i]) {
                 nextBoard.getCell(pos[i][0], pos[i][1]).addEnergy(brainOut[i]);

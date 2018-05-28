@@ -12,10 +12,10 @@ function GameNN(inputSize, outputSize){
 
   this.CONFIG = {
     binaryThresh: 0.5,     // ¯\_(ツ)_/¯
-    hiddenLayers: [3],     // array of ints for the sizes of the hidden layers in the network
+    hiddenLayers: [3,3],     // array of ints for the sizes of the hidden layers in the network
     activation: 'sigmoid', // Supported activation types ['sigmoid', 'relu', 'leaky-relu', 'tanh']
     iterations: 0,
-    timeout: 10,
+    timeout: 1,
   };
 
   this.runNet = function(net, input) {
@@ -65,12 +65,21 @@ function GameNN(inputSize, outputSize){
   this.createSmartNet = function(){
     let net = new brain.NeuralNetwork({
       binaryThresh: 0.5,
-      hiddenLayers: [3],
+      hiddenLayers: [3,3],
       activation: 'sigmoid',
-      iterations: 50,
+      iterations: 100,
       timeout: 100000,
     });
-    net.train([{input:  [0,0,0,0,0,0,0,0,0,0], output: [0.5,0.5,0.5,0.5]}]);
+    console.log(net.train([{input:  [0,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
+               {input:  [200,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
+               {input:  [500,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
+               {input:  [800,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
+               {input:  [1000,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
+               {input:  [4000,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
+               {input:  [4200,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
+               {input:  [4400,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
+               {input:  [4600,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
+               {input:  [4800,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]}]));
     return net;
   };
 

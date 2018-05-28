@@ -41,8 +41,9 @@ function Cell(isAlive, energy, klass, mybrain){
         //else return [0,0,0,0];
       }
     } else {
+      //input[1] = 0; input[2] = 0; input[3] = 0; input[4] = 0; input[5] = 0; input[6] = 0; input[7] = 0; input[8] = 0; input[9] = 0;
       this.lastBrainOut = BrainManager.runNet(this.mybrain, input);
-      //console.log(brainOut);
+      //console.log(`IN ${input}   \nOUT ${this.lastBrainOut}`);
       return this.lastBrainOut;
     }
   };
