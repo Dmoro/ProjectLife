@@ -15,7 +15,7 @@ function Game (speed) {
   // if energy is given to cell of lower class, that cell is killed and the original cell reproduces there
   // if energy given to cell of higher class, that energy is transferred
   // if energy is taken (negative energy) from lower class or higher class, the energy is simply taken.
-  this.ENERGY_MAX = 50000;
+  this.ENERGY_MAX = 100000;
   this.ENERGY_MIN = 0;
   this.KLASS_MAX = 100;
   this.KLASS_MIN = 0;
