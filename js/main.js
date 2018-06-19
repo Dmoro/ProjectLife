@@ -1,5 +1,6 @@
 "use strict";
-let BrainManager = new GameNN(10, 4);
+//let BrainManager = new GameNN(10, 4);
+let BrainManager = new UserBrain(10,4);
 let game = new Game(250);
 game.start();
 
@@ -113,7 +114,7 @@ function Game (speed) {
               let energyTaken = cell.takeEnergy(brainOut[i]);
               nextBoard.setCell(pos[i][0], pos[i][1],
                 new Cell(1, energyTaken + board.getCell(pos[i][0], pos[i][1]).energy, addRandomInt(cell.klass, 5),
-                BrainManager.alterNet(cell.mybrain)));
+                BrainManager.alter(cell.mybrain)));
             } else { //if not reproduce, simply give energy
               if (cell.takeEnergy(brainOut[i]) >= brainOut[i]) {
                 nextBoard.getCell(pos[i][0], pos[i][1]).addEnergy(brainOut[i]);
@@ -156,11 +157,3 @@ function Game (speed) {
     return nextBoard;
   };
 }
-
-
-
-
-
-
-
-

@@ -18,7 +18,7 @@ function GameNN(inputSize, outputSize){
     timeout: 1,
   };
 
-  this.runNet = function(net, input) {
+  this.run = function(net, input) {
     //check input
     if(input.length !== this.INPUT_SIZE) {
       console.log("ERROR: incorrect input size to NN")
@@ -34,7 +34,7 @@ function GameNN(inputSize, outputSize){
     return cleanResults;
   };
 
-  this.alterNet = function (net) {
+  this.alter = function (net) {
     if(net == null){
       console.log("creating dumb net");
       return null;

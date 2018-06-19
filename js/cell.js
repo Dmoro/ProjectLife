@@ -32,18 +32,18 @@ function Cell(isAlive, energy, klass, mybrain){
 
   this.runBrain = function(input) {
     if(!mybrain){
-      //return[-100, -100, -100, -100];
-      if (input[0] > 100) {
-        return [20, 20, 20, 20];
-      } else {
-        return [0,0,-15,0];
-        //if(input[7] > 90) return [0,0,-20,0];
-        //else return [0,0,0,0];
-      }
+      return [0,0,0,0]
     } else {
-      //input[1] = 0; input[2] = 0; input[3] = 0; input[4] = 0; input[5] = 0; input[6] = 0; input[7] = 0; input[8] = 0; input[9] = 0;
-      this.lastBrainOut = BrainManager.runNet(this.mybrain, input);
-      //console.log(`IN ${input}   \nOUT ${this.lastBrainOut}`);
+      // format input
+      input = {
+        me: {energy: input[0], klass: input[1]},
+        above: {energy: input[2], klass: input[3]},
+        right: {energy: input[4], klass: input[5]},
+        below: {energy: input[6], klass: input[7]},
+        left: {energy: input[8], klass: input[9]}
+      }
+
+      this.lastBrainOut = BrainManager.run(this.mybrain, input);
       return this.lastBrainOut;
     }
   };
@@ -78,8 +78,8 @@ function Cell(isAlive, energy, klass, mybrain){
   };
 
   this.toString = function(){
-    return `<b>Alive:</b> ${this.isAlive} <br /> <b>Age:</b> ${this.age} <br /> <b>Energy:</b> ${Math.trunc(this.energy)} <br /> <b>Klass:</b> ${this.klass} 
-            <br /> <b>Brain:</b> ${Math.trunc(this.lastBrainOut[0])} ${Math.trunc(this.lastBrainOut[1])} 
+    return `<b>Alive:</b> ${this.isAlive} <br /> <b>Age:</b> ${this.age} <br /> <b>Energy:</b> ${Math.trunc(this.energy)} <br /> <b>Klass:</b> ${this.klass}
+            <br /> <b>Brain:</b> ${Math.trunc(this.lastBrainOut[0])} ${Math.trunc(this.lastBrainOut[1])}
             ${Math.trunc(this.lastBrainOut[2])} ${Math.trunc(this.lastBrainOut[3])}`;
   }
 

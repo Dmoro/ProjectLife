@@ -108,7 +108,8 @@ function Canvas (yMax) {
         let cell = game.currBoard.getCell(xCell, yCell);
         cell.isAlive = 1;
         cell.addEnergy(1000);
-        cell.mybrain = BrainManager.createSmartNet();
+        // cell.mybrain = BrainManager.createSmartNet();
+        cell.mybrain = BrainManager.create();
         self.drawCell(xCell, yCell, cell);
       }
     }

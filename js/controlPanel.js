@@ -4,6 +4,10 @@ function ControlPanel() {
   self.resetButton = document.getElementById("resetButton");
   self.populateButton = document.getElementById("populateButton");
   self.infoButton = document.getElementById("lookInfoButton");
+  self.createBrainButton = document.getElementById("createBrain");
+  self.createBrainPanel = document.getElementById("createBrainPanel");
+  self.createBrainOKButton = document.getElementById("createBrainOK");
+  self.createBrainCodeText = document.getElementById("brainCodeText");
   self.speedSlider = document.getElementById("speedSlider");
   self.titleText = document.getElementById("titleText");
   self.gameModeBtnIntel = document.getElementById("chooseIntelligentDesign");
@@ -36,6 +40,20 @@ function ControlPanel() {
   this.infoButton.onclick = function() {
     game.canvas.isPopulating = false;
     self.drawModeText.innerText = "Looking at Info";
+  };
+
+  this.createBrainButton.onclick = function() {
+    if(self.createBrainPanel.style.display == "none" ||
+       !self.createBrainPanel.style.display ){
+      self.createBrainPanel.style.display = "block"
+    } else {
+      self.createBrainPanel.style.display = "none"
+    }
+  };
+
+  this.createBrainOKButton.onclick = function() {
+    BrainManager.setCode(self.createBrainCodeText.value)
+    self.createBrainPanel.style.display = "none"
   };
 
   this.gameModeBtnIntel.onclick = function(){
