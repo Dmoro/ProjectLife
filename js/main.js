@@ -1,6 +1,5 @@
 "use strict";
-//let BrainManager = new GameNN(10, 4);
-let BrainManager = new UserBrain(10,4);
+let BrainManager = new GeneralBrainManager(10,4);
 let game = new Game(250);
 game.start();
 

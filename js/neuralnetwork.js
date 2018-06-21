@@ -22,6 +22,7 @@ function GameNN(inputSize, outputSize){
     //check input
     if(input.length !== this.INPUT_SIZE) {
       console.log("ERROR: incorrect input size to NN")
+      console.log(input)
       return null;
     }
 

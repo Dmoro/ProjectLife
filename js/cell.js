@@ -40,9 +40,9 @@ function Cell(isAlive, energy, klass, mybrain){
         above: {energy: input[2], klass: input[3]},
         right: {energy: input[4], klass: input[5]},
         below: {energy: input[6], klass: input[7]},
-        left: {energy: input[8], klass: input[9]}
+        left: {energy: input[8], klass: input[9]},
+        raw: input
       }
-
       this.lastBrainOut = BrainManager.run(this.mybrain, input);
       return this.lastBrainOut;
     }

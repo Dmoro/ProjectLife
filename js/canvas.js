@@ -105,11 +105,8 @@ function Canvas (yMax) {
         let mousePos = self.getMousePos(evt);
         let xCell = Math.trunc(mousePos.x / self.cellWidth);
         let yCell = Math.trunc(mousePos.y / self.cellHeight);
-        let cell = game.currBoard.getCell(xCell, yCell);
-        cell.isAlive = 1;
-        cell.addEnergy(1000);
-        // cell.mybrain = BrainManager.createSmartNet();
-        cell.mybrain = BrainManager.create();
+        cell = new Cell(1, 5000, 0, BrainManager.create())
+        game.currBoard.setCell(xCell, yCell, cell);
         self.drawCell(xCell, yCell, cell);
       }
     }

@@ -34,6 +34,15 @@
       text-align:center;
     }
 
+    .controlBrainCreator {
+      position: absolute;
+      bottom: 0;
+    }
+
+    .buttons {
+      text-transform: capitalize;
+    }
+
     .brainCreator {
       display: none;
       position: fixed;
@@ -92,14 +101,15 @@
     <h3> Enter brain code here </h3>
     <form action="#">
       <div class="mdl-textfield mdl-js-textfield">
-        <textarea class="mdl-textfield__input" type="text" rows= "5" id="brainCodeText" ></textarea>
-        <label class="mdl-textfield__label" for="sample5"> <div>
-          if (me.energy > 500) <br> &emsp;{ return [20, 20, 20, 20]; }
-          <br> else { <br> &emsp;
-            return [-100,0,0,0]; }</div></label>
+        <textarea class="mdl-textfield__input" type="text" rows= "5" id="brainCodeText" style="width:100%"></textarea>
+        <label class="mdl-textfield__label" for="sample5"> </label>
       </div>
     </form>
-    <input id="createBrainOK" type="button" value="OK" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored"/>
+    <div class="controlBrainCreator mdl-card__actions mdl-card--border ">
+      <input id="brainType" type="button" value="Create NN Brain" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary"/>
+      <input id="loadBrain" type="button" value="Load Brain" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary"/>
+      <input id="createBrainOK" type="button" value="SUBMIT" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"/>
+    </div>
   </div>
 
   <div class="controlPanel mdl-card mdl-shadow--16dp">
@@ -142,7 +152,7 @@
   <script src="js/brain.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/neuralnetwork.js"></script>
-  <script src="js/userbrain.js"></script>
+  <script src="js/brainmanager.js"></script>
   <script src="js/board.js"></script>
   <script src="js/canvas.js"></script>
   <script src="js/cell.js"></script>
