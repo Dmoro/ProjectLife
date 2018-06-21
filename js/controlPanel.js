@@ -15,6 +15,9 @@ function ControlPanel() {
   self.gameModeBtnIntel = document.getElementById("chooseIntelligentDesign");
   self.gameModeBtnLife = document.getElementById("chooseGameOfLife");
   self.drawModeText = document.getElementById("drawMode");
+  self.nnTextCode = "Neural Network model:\n  " +
+                    "- Two hidden layers of three nodes each\n  " +
+                    "- Sigmoid activation function\n  - Used Brain.js (github.com/BrainJS/brain.js)"
 
   this.playButton.onclick = function(){
     if(game.running) {
@@ -52,7 +55,7 @@ function ControlPanel() {
         self.createBrainCodeText.value = BrainManager.newCode
         self.createBrainCodeText.readOnly = false;
       } else {
-        self.createBrainCodeText.value = "Machine Learning Algorithm"
+        self.createBrainCodeText.value = self.nnTextCode;
         self.createBrainCodeText.readOnly = true;
       }
     } else {
@@ -61,7 +64,9 @@ function ControlPanel() {
   };
 
   this.createBrainOKButton.onclick = function() {
-    BrainManager.setCode(self.createBrainCodeText.value)
+    if(BrainManager.newBrainsType === 'user') {
+      BrainManager.setCode(self.createBrainCodeText.value)
+    }
     self.createBrainPanel.style.display = "none"
   };
 
@@ -69,12 +74,12 @@ function ControlPanel() {
     if(BrainManager.newBrainsType === 'user') {
       self.createBrainTypeButton.value = "Create User Brain"
       BrainManager.newBrainsType = 'nn'
-      self.createBrainCodeText.value = "Machine Learning Algorithm"
+      self.createBrainCodeText.value = self.nnTextCode;
       self.createBrainCodeText.readOnly = true;
     } else {
       self.createBrainTypeButton.value = "Create NN Brain"
-      BrainManager.newBrainsType = 'user'
-      self.createBrainCodeText.value = BrainManager.newCode
+      BrainManager.newBrainsType = 'user';
+      self.createBrainCodeText.value = BrainManager.newCode;
       self.createBrainCodeText.readOnly = false;
     }
   };

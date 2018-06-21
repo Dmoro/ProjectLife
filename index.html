@@ -37,6 +37,8 @@
     .controlBrainCreator {
       position: absolute;
       bottom: 0;
+      right: 0;
+      width: 55%;
     }
 
     .buttons {
@@ -45,13 +47,38 @@
 
     .brainCreator {
       display: none;
-      position: fixed;
-      width: 50%;
-      height: 50%;
-      top: 25%;
-      right: 35%;
-      padding: 5px;
+      position: absolute;
+      width: 80%;
+      height: 70%;
+      top: 10%;
+      margin: 22px;
       text-align:center;
+    }
+
+    .brainCreatorTextField {
+      position: absolute;
+      right: 0;
+      width:50%;
+      height:83%;
+      padding-left:2.5%;
+      padding-top:3.5%;
+      padding-right:2.5%;
+      background-color : #d1d1d1;
+      overflow: hidden;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 14pt;
+      font-weight: bold;
+    }
+
+    .brainCreatorInfo {
+      position: absolute;
+      left: 0;
+      width:40%;
+      height:100%;
+      padding-left:3%;
+      padding-right:3%;
+      text-align: left;
+      overflow: hidden;
     }
 
     .controlPanelElements {
@@ -98,14 +125,29 @@
 
   <!-- Create a Brain -->
   <div id="createBrainPanel" class="brainCreator mdl-card mdl-shadow--16dp">
-    <h3> Enter brain code here </h3>
+    <div class=brainCreatorInfo>
+      <h3> Brain Creator </h3>
+      Write your code in JavaScript <br>
+      Input: <br>
+        - me {energy, klass} <br>
+        - above {energy, klass} <br>
+        - right {energy, klass} <br>
+        - below {energy, klass} <br>
+        - left {energy, klass} <br>
+        <br>
+        To access input vars, use the name of the property, then a ".", followed by either "energy" or "klass" <br>
+        <br>
+      Output:<br>
+        x = energy to give or take away (integer value)<br>
+        [x_above, x_right, x_below, x_left]<br>
+        <br>
+        Your code MUST return an array of integers of size 4. A positive integer means the cell will give energy to the corresponding neighbor,
+        while a negative integer means the cell will take energy from the corresponding neighbor.<br>
+    </div>
     <form action="#">
-      <div class="mdl-textfield mdl-js-textfield">
-        <textarea class="mdl-textfield__input" type="text" rows= "5" id="brainCodeText" style="width:100%"></textarea>
-        <label class="mdl-textfield__label" for="sample5"> </label>
-      </div>
+        <textarea class="brainCreatorTextField" type="text" rows= "30" id="brainCodeText" ></textarea>
     </form>
-    <div class="controlBrainCreator mdl-card__actions mdl-card--border ">
+    <div class="controlBrainCreator mdl-card__actions mdl-card--border">
       <input id="brainType" type="button" value="Create NN Brain" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary"/>
       <input id="loadBrain" type="button" value="Load Brain" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary"/>
       <input id="createBrainOK" type="button" value="SUBMIT" class="buttons mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"/>
