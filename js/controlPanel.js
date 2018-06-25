@@ -9,7 +9,12 @@ function ControlPanel() {
   self.createBrainOKButton = document.getElementById("createBrainOK");
   self.createBrainTypeButton = document.getElementById("brainType");
   self.createBrainLoadButton = document.getElementById("loadBrain");
+  self.createBrainSaveButton = document.getElementById("saveBrain");
+  self.createBrainName = document.getElementById("brainName");
+  self.createBrainClearStorage = document.getElementById("clearStorage");
   self.createBrainCodeText = document.getElementById("brainCodeText");
+  self.createBrainLoadBrain = document.getElementById("brainLoader");
+  self.createBrainLoadBrainList = document.getElementById("brainLoaderList");
   self.speedSlider = document.getElementById("speedSlider");
   self.titleText = document.getElementById("titleText");
   self.gameModeBtnIntel = document.getElementById("chooseIntelligentDesign");
@@ -52,7 +57,8 @@ function ControlPanel() {
        !self.createBrainPanel.style.display ){
       self.createBrainPanel.style.display = "block"
       if(BrainManager.newBrainsType === 'user') {
-        self.createBrainCodeText.value = BrainManager.newCode
+        self.createBrainCodeText.value = BrainManager.newCode;
+        self.createBrainName.value = BrainManager.newName;
         self.createBrainCodeText.readOnly = false;
       } else {
         self.createBrainCodeText.value = self.nnTextCode;
@@ -65,7 +71,8 @@ function ControlPanel() {
 
   this.createBrainOKButton.onclick = function() {
     if(BrainManager.newBrainsType === 'user') {
-      BrainManager.setCode(self.createBrainCodeText.value)
+      BrainManager.setCode(self.createBrainCodeText.value);
+      BrainManager.newName = self.createBrainName.value;
     }
     self.createBrainPanel.style.display = "none"
   };
@@ -76,13 +83,77 @@ function ControlPanel() {
       BrainManager.newBrainsType = 'nn'
       self.createBrainCodeText.value = self.nnTextCode;
       self.createBrainCodeText.readOnly = true;
+      self.createBrainLoadButton.style.display = "none"
+      self.createBrainSaveButton.style.display = "none"
+      self.createBrainClearStorage.style.display = "none"
     } else {
       self.createBrainTypeButton.value = "Create NN Brain"
       BrainManager.newBrainsType = 'user';
       self.createBrainCodeText.value = BrainManager.newCode;
       self.createBrainCodeText.readOnly = false;
+      self.createBrainLoadButton.style.display = "inline"
+      self.createBrainSaveButton.style.display = "inline"
+      self.createBrainClearStorage.style.display = "inline"
     }
   };
+
+  this.createBrainSaveButton.onclick = function() {
+    if(BrainManager.newBrainsType === 'user') {
+      let newBrain = new Brain('user', self.createBrainCodeText.value, null);
+      BrainManager.save(self.createBrainName.value.toLowerCase(), newBrain);
+    } else {
+      console.log('Cannot save NNs');
+    }
+  }
+
+  this.loadSpecificBrain = function( e ){
+      name = e.toElement.innerText
+      console.log("loading " + name)
+      if(BrainManager.newBrainsType === 'user') {
+        let loadBrain = BrainManager.load(name);
+        self.createBrainName.value = name;
+        self.createBrainCodeText.value = loadBrain.code;
+      } else {
+        console.log('Cannot load NNs');
+      }
+
+      self.createBrainLoadBrain.style.display = "none";
+  }
+
+  this.createBrainClearStorage.onclick = function(){
+    BrainManager.clearStorage();
+    self.refreshLoadList();
+  }
+
+  this.refreshLoadList = function() {
+    //clear list
+    let myNode = self.createBrainLoadBrainList
+    while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+    }
+
+    //Add all brains to list
+    let allBrains = BrainManager.loadAllBrains()
+    for(let i in allBrains){
+      let entry = document.createElement('button');
+      entry.addEventListener('click', self.loadSpecificBrain);
+      entry.className = "brainLoaderListItem mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect";
+      let text = document.createTextNode(i)
+      entry.appendChild(text);
+      self.createBrainLoadBrainList.appendChild(entry);
+    }
+  }
+
+  this.createBrainLoadButton.onclick = function() {
+    self.refreshLoadList();
+
+    if(self.createBrainLoadBrain.style.display === 'none'){
+      self.createBrainLoadBrain.style.display = "block";
+    } else {
+      self.createBrainLoadBrain.style.display = "none";
+    }
+
+  }
 
   this.gameModeBtnIntel.onclick = function(){
     self.titleText.innerHTML = "Intelligent Design";
