@@ -11,7 +11,7 @@ function Cell(isAlive, energy, klass, mybrain){
   else { this.klass = klass;  }
 
   this.mybrain = mybrain;
-  this.lastBrainOut = [0,0,0,0];
+  this.lastBrainOut = [0,0,0,0,0];
 
   this.clear = function(){
     this.isAlive = 0;
@@ -80,7 +80,7 @@ function Cell(isAlive, energy, klass, mybrain){
   this.toString = function(){
     return `<b>Alive:</b> ${this.isAlive} <br /> <b>Age:</b> ${this.age} <br /> <b>Energy:</b> ${Math.trunc(this.energy)} <br /> <b>Klass:</b> ${this.klass}
             <br /> <b>Brain:</b> ${Math.trunc(this.lastBrainOut[0])} ${Math.trunc(this.lastBrainOut[1])}
-            ${Math.trunc(this.lastBrainOut[2])} ${Math.trunc(this.lastBrainOut[3])}`;
+            ${Math.trunc(this.lastBrainOut[2])} ${Math.trunc(this.lastBrainOut[3])} ${Math.trunc(this.lastBrainOut[4])}`;
   }
 
 }

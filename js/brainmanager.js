@@ -2,7 +2,7 @@
 
 function GeneralBrainManager(inputSize, outputSize){
   this.newBrainsType = "user";
-  this.newCode = "return [0,0,0,0]";
+  this.newCode = "return [0,0,0,0,0]";
   this.newName = 'Default'
   this.nn = new GameNN(inputSize, outputSize);
   this.newNet = this.nn.createSmartNet();
@@ -16,7 +16,7 @@ function GeneralBrainManager(inputSize, outputSize){
 
   this.setTypeUserCode = function() {
     self.newBrainsType = "user";
-    self.newCode = "return [0,0,0,0]";
+    self.newCode = "return [0,0,0,0,0]";
   }
 
   this.setCode = function(code){
@@ -46,7 +46,7 @@ function GeneralBrainManager(inputSize, outputSize){
         return func(input.me, input.above, input.right, input.below, input.left);
       } catch(err) {
         console.log("ERROR: " + err)
-        return [0,0,0,0]
+        return [0,0,0,0,0]
       }
     } else {
       return self.nn.run(brain.net, input.raw);
@@ -81,7 +81,7 @@ function GeneralBrainManager(inputSize, outputSize){
         brainStorage = JSON.parse(localStorage.getItem("brainStorage"))
         console.log("loading up storage")
       } else {
-        brainStorage = {default:new Brain('user', 'return[0,0,0,0]', null)};
+        brainStorage = {default:new Brain('user', 'return[0,0,0,0,0]', null)};
         console.log("creating new storage")
       }
 

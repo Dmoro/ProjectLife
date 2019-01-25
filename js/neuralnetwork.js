@@ -8,11 +8,11 @@
 function GameNN(inputSize, outputSize){
   this.INPUT_SIZE = inputSize;
   this.OUTPUT_SIZE = outputSize;
-  this.MAX_OUTPUT = 1000;
+  this.MAX_OUTPUT = 500;
 
   this.CONFIG = {
     binaryThresh: 0.5,     // ¯\_(ツ)_/¯
-    hiddenLayers: [3,3],     // array of ints for the sizes of the hidden layers in the network
+    hiddenLayers: [5,5],     // array of ints for the sizes of the hidden layers in the network
     activation: 'sigmoid', // Supported activation types ['sigmoid', 'relu', 'leaky-relu', 'tanh']
     iterations: 0,
     timeout: 1,
@@ -30,27 +30,34 @@ function GameNN(inputSize, outputSize){
     let netResults = net.run(input);
     let cleanResults = [];
     for(let i = 0; i < netResults.length; i++){
-      cleanResults[i] =  (netResults[i]-0.5) * this.MAX_OUTPUT;
+      if(i < 4){
+        cleanResults[i] =  (netResults[i]-0.2) * this.MAX_OUTPUT;
+      } else {
+        cleanResults[i] =  netResults[i] * 100; // klass output
+      }
     }
     return cleanResults;
   };
 
   this.alter = function (net) {
+    let nudge = (Math.random() - 0.5) * 0.1
+
     if(net == null){
       console.log("creating dumb net");
       return null;
     }
     let newNet = this.createRandomNet();
+    net = net.net
     for (let layer = 1; layer <= net.outputLayer; layer++) {
       for (let node = 0; node < net.sizes[layer]; node++) {
         let nodeWeights = net.weights[layer][node];
         for(let w = 0; w < nodeWeights.length; w++){
           let weight = net.weights[layer][node][w];
-          newNet.weights[layer][node][w] = weight + Math.random() - Math.random();
+          newNet.weights[layer][node][w] = weight + nudge;
         }
 
         let bias = net.biases[layer][node];
-        newNet.biases[layer][node] = bias + Math.random() - Math.random();
+        newNet.biases[layer][node] = bias + nudge;
       }
     }
     return newNet;
@@ -71,16 +78,16 @@ function GameNN(inputSize, outputSize){
       iterations: 100,
       timeout: 100000,
     });
-    console.log(net.train([{input:  [0,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
-               {input:  [200,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
-               {input:  [500,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
-               {input:  [800,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
-               {input:  [1000,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0]},
-               {input:  [4000,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
-               {input:  [4200,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
-               {input:  [4400,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
-               {input:  [4600,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]},
-               {input:  [4800,0,0,0,0,0,0,0,0,0], output: [0.99,0.99,0.99,0.99]}]));
+    console.log(net.train([{input:  [0,0,0,0,0,0,0,0,0,0], output: [0.0,0.0,0.0,0.0,0.0]},
+               {input:  [200,0,0,0,0,0,0,0,0,0], output: [0.7,0.0,0.0,0.0,0.1]},
+               {input:  [500,0,0,0,0,0,0,0,0,0], output: [0.7,0.0,0.0,0.0,0.0]},
+               {input:  [800,0,0,0,0,0,0,0,0,0], output: [0.7,0.0,0.0,0.0,0.0]},
+               {input:  [1000,0,0,0,0,0,0,0,0,0], output: [0.7,0.0,0.0,0.0,0.1]},
+               {input:  [10000,0,0,0,0,0,0,0,0,0], output: [0.7,0.6,0.6,0.6,0.0]},
+               {input:  [42000,0,0,0,0,0,0,0,0,0], output: [0.6,0.6,0.6,0.6,0.0]},
+               {input:  [44000,0,0,0,0,0,0,0,0,0], output: [0.6,0.6,0.6,0.6,0.1]},
+               {input:  [46000,0,0,0,0,0,0,0,0,0], output: [0.6,0.6,0.6,0.6,0.0]},
+               {input:  [48000,0,0,0,0,0,0,0,0,0], output: [0.6,0.6,0.6,0.6,0.0]}]));
     return net;
   };
 

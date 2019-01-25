@@ -1,5 +1,5 @@
 "use strict";
-let BrainManager = new GeneralBrainManager(10,4);
+let BrainManager = new GeneralBrainManager(10,5);
 let game = new Game(250);
 game.start();
 
@@ -21,7 +21,7 @@ function Game (speed) {
   this.KLASS_MIN = 0;
   this.speed = speed;
   this.running = true;
-  this.yCellNum = 60;
+  this.yCellNum = 100;
   this.gameMode = 'Intel';
 
   this.start = function () {
@@ -86,9 +86,15 @@ function Game (speed) {
           continue;
         }
         //add energy from sun
-        cell.addEnergy((1 - (oldcell.klass / this.KLASS_MAX)) * 500);
+        cell.addEnergy((this.KLASS_MAX - oldcell.klass) * 5);
         //take away energy from living
-        cell.takeEnergy(50 + oldcell.klass);
+        cell.takeEnergy(oldcell.klass*2);
+        // check if now dead
+        if (oldcell.energy <= this.ENERGY_MIN) {
+          cell.kill();
+          this.canvas.drawCell(x, y, cell);
+          continue;
+        }
         //brain in
         let pos = {above: [x, y + 1], right: [x + 1, y], bottom: [x, y - 1], left: [x - 1, y]};
         let brainInput =
@@ -98,6 +104,8 @@ function Game (speed) {
             board.getCell(pos.bottom[0], pos.bottom[1]).energy, board.getCell(pos.bottom[0], pos.bottom[1]).klass, //bottom
             board.getCell(pos.left[0], pos.left[1]).energy, board.getCell(pos.left[0], pos.left[1]).klass,]; //left
         let brainOut = cell.runBrain(brainInput);
+        let klassOut = brainOut[4];
+        brainOut = brainOut.slice(0, 4);
         //implement brain out
         pos = [[x, y + 1], [x + 1, y], [x, y - 1], [x - 1, y]];
         for (let i = 0; i < brainOut.length; i++) {
@@ -108,11 +116,11 @@ function Game (speed) {
             cell.addEnergy(Math.abs(energyTaken));
 
           } else if (brainOut[i] > 0) { //place energy
-            if (rcellOld.isAlive === 0 || rcellOld.klass < oldcell.klass) { //check if can reproduce
+            if (rcellOld.isAlive === 0 || rcellOld.klass + 1 < oldcell.klass) { //check if can reproduce
               //console.log(`[${x},${y}] is reproducing. Giving ${brainOut[i]} energy to (${pos[i][0]},${pos[i][1]})`);
               let energyTaken = cell.takeEnergy(brainOut[i]);
               nextBoard.setCell(pos[i][0], pos[i][1],
-                new Cell(1, energyTaken + board.getCell(pos[i][0], pos[i][1]).energy, addRandomInt(cell.klass, 5),
+                new Cell(1, energyTaken / 2 + board.getCell(pos[i][0], pos[i][1]).energy, klassOut,
                 BrainManager.alter(cell.mybrain)));
             } else { //if not reproduce, simply give energy
               if (cell.takeEnergy(brainOut[i]) >= brainOut[i]) {
