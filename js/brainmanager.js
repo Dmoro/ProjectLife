@@ -1,7 +1,7 @@
 "use strict";
 
 function GeneralBrainManager(inputSize, outputSize){
-  this.newBrainsType = "user";
+  this.newBrainsType = "net";
   this.newCode = "return [0,0,0,0,0]";
   this.newName = 'Default'
   this.nn = new GameNN(inputSize, outputSize);
