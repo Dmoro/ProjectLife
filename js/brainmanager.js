@@ -1,8 +1,8 @@
 "use strict";
 
 function GeneralBrainManager(inputSize, outputSize){
-  this.newBrainsType = "net";
-  this.newCode = "return [0,0,0,0,0]";
+  this.newBrainsType = "nn";
+  this.newCode = null //"return [0,0,0,0,0]";
   this.newName = 'Default'
   this.nn = new GameNN(inputSize, outputSize);
   this.newNet = this.nn.createSmartNet();
